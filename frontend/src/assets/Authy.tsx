@@ -1,14 +1,25 @@
-<?xml version="1.0" encoding="utf-8"?>
+import React from "react";
 
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
-<svg height="800px" width="800px" version="1.1" id="_x32_" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
-	 viewBox="0 0 512 512"  xml:space="preserve">
-<style type="text/css">
-	.st0{fill:#000000;}
-</style>
-<g>
-	<path class="st0" d="M345.913,60.078C308.447-6.798,217.4-22.036,161.256,35.756c-8.71,8.964-15.43,19.816-20.341,31.885
+interface AuthyProps {
+  color?: string;
+  size?: number;
+}
+
+const Authy: React.FC<AuthyProps> = ({ color = "#ffffff", size = 24 }) => {
+  // Remove unnecessary XML declaration and DOCTYPE
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 512 512"
+      height={size}
+      width={size}
+      xmlSpace="preserve"
+    >
+      <style type="text/css">{`.st0 { fill: ${color}; }`}</style>
+      <g>
+        <path
+          className="st0"
+          d="M345.913,60.078C308.447-6.798,217.4-22.036,161.256,35.756c-8.71,8.964-15.43,19.816-20.341,31.885
 		c-4.053,13.391-6.067,28.216-6.067,43.589c0,23.876,4.801,49.003,13.67,71.74c8.869,22.754,21.798,43.071,37.626,57.625
 		c10.565,9.713,22.348,16.886,35.198,20.819c7.34,2.261,15.047,3.463,23.168,3.463c9.689,0,19.984-1.719,30.946-5.573l5.963,16.998
 		c-12.706,4.474-25.078,6.584-36.909,6.584c-11.154,0.008-21.822-1.879-31.798-5.342c-10-3.455-19.298-8.478-27.833-14.713
@@ -19,6 +30,11 @@
 		c6.696,14.044,12.045,24.935,22.339,17.842c10.287-7.102,22.738-18.55,30.874-21.305c8.137-2.747-4.984-18.328-7.73-33.637
 		c-12.022-66.988,20.612-89.32,32.634-178.623C511.877,159.5,439.403,86.16,345.913,60.078z M390.258,221.265
 		c-6.377,0-11.552-5.167-11.552-11.544c0-6.385,5.175-11.552,11.552-11.552s11.544,5.167,11.544,11.552
-		C401.802,216.098,396.635,221.265,390.258,221.265z"/>
-</g>
-</svg>
+		C401.802,216.098,396.635,221.265,390.258,221.265z"
+        />
+      </g>
+    </svg>
+  );
+};
+
+export default Authy;

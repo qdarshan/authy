@@ -27,7 +27,7 @@ const Nav = memo(() => {
           hover:font-semibold 
           transition-all duration-200 
           px-2 py-1 
-          hover:bg-gray-700/50
+          hover:bg-ring/5
           after:content-[attr(data-text)]
           after:block 
           after:h-0 
