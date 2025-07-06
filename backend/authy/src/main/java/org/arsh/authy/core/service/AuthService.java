@@ -1,10 +1,12 @@
 package org.arsh.authy.core.service;
 
-import org.arsh.authy.web.dto.AuthResponse;
-import org.arsh.authy.web.dto.LoginRequest;
-import org.arsh.authy.web.dto.RegisterRequest;
+import jakarta.validation.Valid;
+import org.arsh.authy.web.dto.*;
 
 public interface AuthService {
-    AuthResponse register(RegisterRequest request);
+    void register(RegisterRequest request);
     AuthResponse login(LoginRequest request);
+    void forgotPassword(ForgotPasswordRequest request);
+    void resetPassword(ResetPasswordRequest request);
+    void verifyEmail(String token);
 }

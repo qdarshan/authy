@@ -1,0 +1,11 @@
+plugins {
+    id 'java'
+}
+
+dependencies {
+//    implementation 'spring-security-cor'
+}
+
+jar {
+    enabled = true
+}

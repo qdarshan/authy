@@ -1,5 +1,6 @@
 package org.arsh.authy.security.service.impl;
 
+import org.arsh.authy.core.context.TenantContext;
 import org.arsh.authy.persistence.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,7 +20,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(
             String username
     ) throws UsernameNotFoundException {
-        return userRepository.findByEmail(username)
+        Long tenantId = TenantContext.getCurrentTenant();
+        if (tenantId == null) {
+            throw new UsernameNotFoundException("Tenant context not available for user lookup.");
+        }
+
+        return userRepository.findByEmailAndTenant_Id(username, tenantId)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 }

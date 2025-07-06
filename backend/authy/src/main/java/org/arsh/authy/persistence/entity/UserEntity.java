@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,18 +16,22 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"email", "tenant_id"})
+})
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
+@FilterDef(name = "tenantFilter", parameters = {@ParamDef(name = "tenantId", type = Long.class)})
+@Filter(name = "tenantFilter", condition = "tenant_id = :tenantId")
 public class UserEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long ID;
+    private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String email;
 
     @Column(nullable = false)
@@ -34,11 +41,14 @@ public class UserEntity implements UserDetails {
     @Column(nullable = false)
     private Role role;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "tenant_id", nullable = false)
     private TenantEntity tenant;
 
-    public UserEntity(String email, String passwordHash, Role role, TenantEntity tenant){
+    @Column(nullable = false)
+    private boolean isEnabled;
+
+    public UserEntity(String email, String passwordHash, Role role, TenantEntity tenant) {
         this.email = email;
         this.passwordHash = passwordHash;
         this.role = role;
@@ -47,7 +57,7 @@ public class UserEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_"+ role.name()));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
     @Override
@@ -58,25 +68,5 @@ public class UserEntity implements UserDetails {
     @Override
     public String getUsername() {
         return this.email;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return UserDetails.super.isCredentialsNonExpired();
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
     }
 }

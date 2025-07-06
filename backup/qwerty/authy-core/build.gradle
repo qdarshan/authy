@@ -1,0 +1,18 @@
+plugins {
+    id 'java'
+}
+
+dependencies {
+    implementation project(":authy-common")
+    implementation project(":authy-persistence")
+    implementation project(":authy-security")
+    implementation project(":authy-web")
+
+    implementation 'org.springframework:spring-context'
+    implementation 'jakarta.validation:jakarta.validation-api'
+    implementation 'org.springframework.security:spring-security-crypto'
+}
+
+jar {
+    enabled = true
+}

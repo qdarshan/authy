@@ -1,6 +1,7 @@
 package org.arsh.authy.security.config;
 
 import org.arsh.authy.security.filter.JwtAuthenticationFilter;
+import org.arsh.authy.security.filter.TenantIdentifierFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,13 +24,16 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final UserDetailsService userDetailsService;
+    private final TenantIdentifierFilter tenantIdentifierFilter;
 
     public SecurityConfig(
             JwtAuthenticationFilter jwtAuthenticationFilter,
-            UserDetailsService userDetailsService
+            UserDetailsService userDetailsService,
+            TenantIdentifierFilter tenantIdentifierFilter
     ) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.userDetailsService = userDetailsService;
+        this.tenantIdentifierFilter = tenantIdentifierFilter;
     }
 
     @Bean
@@ -38,7 +42,7 @@ public class SecurityConfig {
     ) throws Exception {
         http
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/api/auth/**", "/h2-console/**").permitAll()
+                        .requestMatchers("/api/auth/**", "/api/tenants/register", "/h2-console/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(AbstractHttpConfigurer::disable)
@@ -50,6 +54,7 @@ public class SecurityConfig {
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
+                .addFilterBefore(tenantIdentifierFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
 
@@ -65,8 +70,7 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(
             PasswordEncoder passwordEncoder
     ) {
-        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(userDetailsService);
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
         return new ProviderManager(daoAuthenticationProvider);
     }
